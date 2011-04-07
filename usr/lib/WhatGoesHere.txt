@@ -1,0 +1,1 @@
+platform-independent libraries, for scripting languages etc.
