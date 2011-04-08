@@ -1,4 +1,3 @@
-// dem_info.h
 // $Id$
 // $URL$
 // http://mew.cx/
