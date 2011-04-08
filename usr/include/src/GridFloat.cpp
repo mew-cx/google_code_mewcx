@@ -1,19 +1,18 @@
-// FileContents.cpp
 // $Id$
 // $URL$
 // http://mew.cx/
 
-#include "FileContents.h"
+#include "GridFloat.h"
 #include <fstream>
 
 
-FileContents::FileContents() :
+GridFloat::GridFloat() :
         _data(0), _numBytes(0)
 {
 }
 
 
-FileContents::~FileContents()
+GridFloat::~GridFloat()
 {
     delete [] _data;
     _data = 0;
@@ -21,7 +20,7 @@ FileContents::~FileContents()
 }
 
 
-bool FileContents::read( const std::string& fileName )
+bool GridFloat::read( const std::string& fileName )
 {
     _fileName = fileName;
     std::ifstream infile;
