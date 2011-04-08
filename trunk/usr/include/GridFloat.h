@@ -1,16 +1,14 @@
-// FileContents.h
 // $Id$
 // $URL$
 // http://mew.cx/
 
-//#include <types.h>
 #include <string>
 
-class FileContents
+class GridFloat
 {
 public:
-    FileContents();
-    ~FileContents();
+    GridFloat();
+    ~GridFloat();
 
     bool read( const std::string& fileName );
 
@@ -27,8 +25,8 @@ private:
     size_t _numBytes;
 
 private:        // disallowed
-    FileContents( const FileContents& );
-    const FileContents& operator=( const FileContents& );
+    GridFloat( const GridFloat& );
+    const GridFloat& operator=( const GridFloat& );
 };
 
 // vim: set sw=4 ts=8 et ic ai:

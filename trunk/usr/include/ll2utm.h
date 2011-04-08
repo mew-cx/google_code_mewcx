@@ -1,4 +1,3 @@
-// ll2utm.h
 // $Id$
 // $URL$
 // http://mew.cx/
@@ -6,53 +5,39 @@
 #ifndef LL2UTM_H
 #define LL2UTM_H
 
-typedef double  Degrees;
-typedef Degrees Latitude;
-typedef Degrees Longitude;
 
-typedef double  Meters;
-typedef Meters  Easting;
-typedef Meters  Northing;
-typedef Meters  Elevation;
-
-
-class Coord2D
+class Coord
 {
 public:
-    Coord2D();
-    virtual ~Coord2D();
-
-private:        // disallowed
-    const Coord2D& operator=( const Coord2D& );
-    Coord2D( const Coord2D& );
+    Coord() {}
+    virtual ~Coord() {}
 };
 
-class WGS84 : public Coord2D
-{
-};
-
-class UTM : public Coord2D
-{
-};
-
-
-class Coord3D
+class WGS84 : public Coord
 {
 public:
-    Coord3D();
-    virtual ~Coord3D();
+    WGS84() : _latitude(0), _longitude(0), _elevation(0) {}
+    WGS84( double lat, double lon, double elev=0 ) : _latitude(lat), _longitude(lon), _elevation(elev) {}
+    ~WGS84() {}
 
-private:        // disallowed
-    Coord3D( const Coord3D& );
-    const Coord3D& operator=( const Coord3D& );
+private:
+    double _latitude;
+    double _longitude;
+    double _elevation;
 };
 
-class WGS84Elev : public Coord3D
+class UTM : public Coord
 {
-};
+public:
+    UTM() : _easting(0), _northing(0), _zone(0), _elevation(0) {}
+    UTM( double e, double n, int zone, double elev=0 ) : _easting(e), _northing(n), _zone(zone), _elevation(elev) {}
+    ~UTM() {}
 
-class UTMElev : public Coord3D
-{
+private:
+    double _easting;
+    double _northing;
+    int _zone;
+    double _elevation;
 };
 
 
