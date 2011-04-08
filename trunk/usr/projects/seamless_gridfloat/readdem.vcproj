@@ -97,9 +97,9 @@
 	<References>
 	</References>
 	<Files>
-		<File RelativePath="FileContents.h" > </File>
+		<File RelativePath="../../include/FileContents.h" > </File>
+		<File RelativePath="../../include/ll2utm.h" > </File>
 		<File RelativePath="../../include/src/FileContents.cpp" > </File>
-		<File RelativePath="ll2utm.h" > </File>
 		<File RelativePath="../../include/src/ll2utm.cpp" > </File>
 		<File RelativePath="readdem.cpp" > </File>
 	</Files>
