@@ -71,7 +71,6 @@ public:
 
 private:        // disallowed
     Ellipsoid();
-    Ellipsoid( const Ellipsoid& );
     const Ellipsoid& operator=( const Ellipsoid& );
 };
 
