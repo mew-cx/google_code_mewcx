@@ -1,10 +1,35 @@
 // $Id$
 // $URL$
-// http://mew.cx/
+// Copyright 2011 Mike Weiblen http://mew.cx/ -- All rights reserved.
 
-#ifndef XXX
-#define XXX
+#ifndef USGS_SEAMLESS_H
+#define USGS_SEAMLESS_H
 
+#include <string>
+
+class UsgsSeamlessGridfloat
+{
+public:
+    UsgsSeamlessGridfloat( const std::string& fileName );
+    ~UsgsSeamlessGridfloat();
+
+    bool valid() const { return( _data != 0 ); }
+    bool operator!() const { return !valid(); }
+
+    const std::string& fileName() const { return _fileName; }
+    const char* data() const { return _data; }
+    const size_t numBytes() const { return _numBytes; }
+
+private:
+    std::string _fileName;
+    char* _data;
+    size_t _numBytes;
+
+private:        // disallowed
+    UsgsSeamlessGridfloat();
+    UsgsSeamlessGridfloat( const UsgsSeamlessGridfloat& );
+    const UsgsSeamlessGridfloat& operator=( const UsgsSeamlessGridfloat& );
+};
 
 #endif
 
