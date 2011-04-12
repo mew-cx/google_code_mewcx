@@ -1,2 +1,0 @@
-this directory is intentionally empty.
-private stuff (not to be checked in to public SVN) goes here.
