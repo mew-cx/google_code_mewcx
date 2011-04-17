@@ -1,4 +1,4 @@
-This is a public repostitory of my work.
+This is the top-level of a public repostitory of my work.
 
 Mike Weiblen
 Black Hawk, Colorado USA
@@ -9,10 +9,13 @@ http://osgtoy.sourceforge.net/
 mew -AT- mew -DOT- cx
 mike -DOT- weiblen -AT- gmail -DOT- com
 
-=============================================================================
 
-usr : small, rapid development.  intended to be painless to update from repo.
-big : big, perhaps slower development.  might be quite expensive to update.
+=============================================================================
+At this level of the repository filesystem, the contents are categorized by
+how Subversion interacts with the repository:
+
+usr : my small, rapid development.  intended to be painless to update from repo.
+big : my big, perhaps slower development.  might be quite expensive to update.
 svn_externals : strictly refers to external repos, no local development.
 
 #EOF
