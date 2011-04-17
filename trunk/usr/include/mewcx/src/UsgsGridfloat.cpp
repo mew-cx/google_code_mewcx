@@ -57,22 +57,28 @@ unsigned int mewcx::Gridfloat::apply( GridfloatFunctor& functor )
     for( _currentRow = 0; _currentRow < _numRows; ++_currentRow )
     {
         _currentCol = 0;
-        functor.rowStart( row );
+        functor.rowStart( _currentRow );
         for( _currentCol = 0; _currentCol < _numCols; ++_currentCol )
         {
             functor( *this );
         }
         _currentCol = 0;
-        functor.rowEnd( row );
+        functor.rowEnd( _currentRow );
     }
     _currentRow = 0;
 }
 
 
-const double mewcx::Gridfloat::currentElev() const
+unsigned int mewcx::Gridfloat::currentIndex() const
 {
-    int index( (_currentRow * _numCols) + _currentCol );
-    return _data[ index ];
+    //return (_currentRow * _numCols) + _currentCol;
+    return (((_numRows-1)-_currentRow) * _numCols) + _currentCol;
+}
+
+
+double mewcx::Gridfloat::currentElev() const
+{
+    return _data[ currentIndex() ];
 }
 
 
