@@ -1,0 +1,3 @@
+"data" consists of relatively-static files that may be refered to by
+other projects.
+eg: digital elevation models, 3D geometry.
