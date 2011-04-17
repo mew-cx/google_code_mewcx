@@ -9,3 +9,10 @@ http://osgtoy.sourceforge.net/
 mew -AT- mew -DOT- cx
 mike -DOT- weiblen -AT- gmail -DOT- com
 
+=============================================================================
+
+usr : small, rapid development.  intended to be painless to update from repo.
+big : big, perhaps slower development.  might be quite expensive to update.
+svn_externals : strictly refers to external repos, no local development.
+
+#EOF
