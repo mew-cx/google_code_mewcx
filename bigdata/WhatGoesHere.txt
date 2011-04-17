@@ -1,0 +1,5 @@
+"big" is for large stuff that isn't necessarily practical for keeping
+incrementally updated in the normal course of development.
+
+The filesystem under "big" is identical to that under "usr".
+
