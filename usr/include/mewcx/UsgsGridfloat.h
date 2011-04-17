@@ -44,7 +44,8 @@ public:
     // the following only valid during apply():
     unsigned int currentRow() const { return _currentRow; }
     unsigned int currentCol() const { return _currentCol; }
-    const double currentElev() const;
+    unsigned int currentIndex() const;
+    double currentElev() const;
     mewcx::UTM currentUtm() const;
 
     //const float* data() const { return _data; }
