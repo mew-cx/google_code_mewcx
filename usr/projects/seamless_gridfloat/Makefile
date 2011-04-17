@@ -4,9 +4,23 @@ EXE = readdem
 RAW = ${EXE}.raw
 PNG = ${EXE}.png
 
+INC_FILES = \
+	../../include/mewcx/Version.h \
+	../../include/mewcx/ll2utm.h \
+	../../include/mewcx/usgs_seamless.h
+
+SRC_FILES =  \
+	../../include/mewcx/src/GridFloat.cpp \
+	../../include/mewcx/src/Version.cpp \
+	../../include/mewcx/src/ll2utm.cpp \
+	../../include/mewcx/src/usgs_seamless.cpp
+
+CPPFLAGS = -I ../../include
+
+
 #all : ${EXE} ${PNG}
 
-${EXE} : ${EXE}.cpp ll2utm.cpp
+${EXE} : ${EXE}.cpp ${SRC_FILES}
 
 ${RAW} : ${EXE}
 	${EXE}
@@ -20,4 +34,4 @@ clean :
 clobber : clean
 	-rm -f ${RAW}
 
-# EOF
+# vim: set sw=4 ts=8 ic ai:
