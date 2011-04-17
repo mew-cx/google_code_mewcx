@@ -1,0 +1,6 @@
+This directory intentionally empty of local content, _except_ for
+svn:externals properties that point to other SVN repositories.
+
+So while this directory may _appear_ to have content, that content is derived
+from other repositories.
+
