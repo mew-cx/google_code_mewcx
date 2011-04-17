@@ -6,14 +6,13 @@ PNG = ${EXE}.png
 
 INC_FILES = \
 	../../include/mewcx/Version.h \
-	../../include/mewcx/ll2utm.h \
-	../../include/mewcx/usgs_seamless.h
+	../../include/mewcx/Coord.h \
+	../../include/mewcx/UsgsGridfloat.h
 
 SRC_FILES =  \
-	../../include/mewcx/src/GridFloat.cpp \
 	../../include/mewcx/src/Version.cpp \
-	../../include/mewcx/src/ll2utm.cpp \
-	../../include/mewcx/src/usgs_seamless.cpp
+	../../include/mewcx/src/Coord.cpp \
+	../../include/mewcx/src/UsgsGridfloat.cpp
 
 CPPFLAGS = -I ../../include
 

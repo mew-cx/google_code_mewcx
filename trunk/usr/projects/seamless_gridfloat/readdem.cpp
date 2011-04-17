@@ -2,19 +2,163 @@
 // $URL$
 // http://mew.cx/
 
-#include <string>
-#include <fstream>
-#include <cassert>
+#include "mewcx/Coord.h"
+#include "mewcx/UsgsGridfloat.h"
+#include "mewcx/private/latlon_home.h"
+
 #include <stdio.h>
 
-// usr/include
-#include "mewcx/ll2utm.h"
-//#include "mewcx/GridFloat.h"
-//#include "mewcx/private/latlon_home.h"
+/////////////////////////////////////////////////////////////////////////////
 
-// usr/data/seamless.usgs.gov/dem
-#include "ned13_89875513.h"
+#if 0
+const char* sourceName( "National Atlas 1000m" );
+const char* fileName( "/home/mew/mewcx.googlecode.com/usr/data/gilpin_3x3/seamless.usgs.gov/dem/71946602/71946602.flt" );
+const mewcx::WGS84 southWest( 39.6081906288839, -105.783183592567 );
+const mewcx::WGS84 northEast( 40.0153473865912, -105.342282705393 );
+const unsigned int numRows(43);
+const unsigned int numCols(35);
+//Resolution in x direction:  1000 Meter
+//Resolution in y direction:  1000 Meter
+#define NODATA_value  (-9999)
+#endif
 
+#if 0
+const char* sourceName( "National Atlas 200m" );
+const char* fileName( "/home/mew/mewcx.googlecode.com/usr/data/gilpin_3x3/seamless.usgs.gov/dem/02309874/02309874.flt" );
+const mewcx::WGS84 southWest( 39.6049682273305, -105.783187301362 );
+const mewcx::WGS84 northEast( 40.019188983844, -105.344016388146 );
+const unsigned int numRows(219);
+const unsigned int numCols(174);
+//Resolution in x direction:  200 Meter
+//Resolution in y direction:  200 Meter
+#define NODATA_value  (-9999)
+#endif
+
+#if 1
+const char* sourceName( "National Elevation Database 1 arcsecond" );
+const char* fileName( "/home/mew/mewcx.googlecode.com/usr/data/gilpin_3x3/seamless.usgs.gov/dem/63870190/ned_63870190.flt" );
+const mewcx::WGS84 southWest( 39.6249999994491, -105.749999998776 );
+const mewcx::WGS84 northEast( 39.9999999994743, -105.37499999875 );
+const unsigned int numRows(1350);
+const unsigned int numCols(1350);
+// Resolution in x direction:  0.000277777777796473 Degree
+// Resolution in y direction:  0.000277777777796473 Degree
+#define NODATA_value  (-9999)
+#endif
+
+#if 0
+const char* sourceName( "National Elevation Database 1/3 arcsecond" );
+const char* fileName( "/home/mew/mewcx.googlecode.com/usr/data/gilpin_3x3/seamless.usgs.gov/dem/89875513/89875513.flt" );
+const mewcx::WGS84 southWest( 39.6249999992044, -105.750092591257 );
+const mewcx::WGS84 northEast( 40.0000925918319, -105.374999998629 );
+const unsigned int numRows(4051);
+const unsigned int numCols(4051);
+// Resolution in x direction:  9.2592592601191E-05 Degree
+// Resolution in y direction:  9.25925926011928E-05 Degree
+#define NODATA_value  (-9999)
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+
+class MinMaxFunctor : public mewcx::GridfloatFunctor
+{
+public:
+    MinMaxFunctor() : _elevMin(1e6), _elevMax(-1e6), _nodataCount(0) {}
+
+    void operator()( const mewcx::Gridfloat& gridfloat )
+    {
+        const mewcx::UTM& utm( gridfloat.currentUtm() );
+        const float elev( utm.elevation() );
+        if( elev > NODATA_value )
+        {
+            if( _elevMin > elev )   _elevMin = elev;
+            if( _elevMax < elev )   _elevMax = elev;
+        }
+        else
+        {
+            ++_nodataCount;
+        }
+    }
+
+public:
+    double _elevMin;
+    double _elevMax;
+    unsigned int _nodataCount;
+};
+
+/////////////////////////////////////////////////////////////////////////////
+
+class VertexFunctor : public mewcx::GridfloatFunctor
+{
+public:
+    VertexFunctor( const mewcx::UTM& origin ) : _origin(origin)
+    {
+        printf( "static const float vertices[][3] = {\n" );
+        printf( "\t// easting, northing, elevation [m]\n" );
+    }
+
+    ~VertexFunctor()
+    {
+        printf( "};\n\n" );
+    }
+
+    void operator()( const mewcx::Gridfloat& gridfloat )
+    {
+        const mewcx::UTM& utm( gridfloat.currentUtm() );
+        printf( "\t{%.2f,%.2f,%.2f},\n",
+            utm.easting() - _origin.easting(),
+            utm.northing() - _origin.northing(),
+            utm.elevation() - _origin.elevation() );
+    }
+private:
+    mewcx::UTM _origin;
+};
+
+/////////////////////////////////////////////////////////////////////////////
+
+class TexcoordFunctor : public mewcx::GridfloatFunctor
+{
+public:
+    TexcoordFunctor()
+    {
+        printf( "static const float texcoords[][2] = {\n" );
+    }
+
+    ~TexcoordFunctor()
+    {
+        printf( "};\n\n" );
+    }
+
+    void operator()( const mewcx::Gridfloat& gridfloat )
+    {
+        const double yFract( (double)gridfloat.currentRow() / (gridfloat.numRows()-1) );
+        const double xFract( (double)gridfloat.currentCol() / (gridfloat.numCols()-1) );
+        printf( "\t{%.4f,%.4f},\n", xFract, yFract );
+    }
+};
+
+/////////////////////////////////////////////////////////////////////////////
+
+class IndexFunctor : public mewcx::GridfloatFunctor
+{
+public:
+    IndexFunctor()
+    {
+        printf( "static const unsigned int indices[] = {\n" );
+    }
+
+    ~IndexFunctor()
+    {
+        printf( "};\n\n" );
+    }
+
+    void operator()( const mewcx::Gridfloat& gridfloat )
+    {
+        const double yFract( (double)gridfloat.currentRow() / (gridfloat.numRows()-1) );
+        const double xFract( (double)gridfloat.currentCol() / (gridfloat.numCols()-1) );
+        printf( "\t{%.4f,%.4f},\n", xFract, yFract );
+    }
+};
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -24,38 +168,13 @@ public:
     App( int argc, char** argv );
     ~App();
 
-    bool loadFile( const std::string path, const std::string root, const std::string ext );
-    void setOrigin( Latitude lat, Longitude lon, Elevation elev );
-    void findMinMax();
-
-    bool makeVerts() const;
-    bool makeTexCoords() const;
-    bool makeNormals() const;
-    bool makeRawImage() const;
-
-private:
-    const DATA_TYPE* demData() const { return reinterpret_cast< const DATA_TYPE* >( _demGridFloat.data() ); }
+    void main();
+    int result() const { return _result; }
 
 private:
     int _argc;
     char** _argv;
-
-    const int _refEllipsoid;
-    std::string _fileRoot;
-    GridFloat _demGridFloat;
-
-    Latitude _originLat;
-    Longitude _originLon;
-    Elevation  _originElev;
-
-    Easting  _originEasting;
-    Northing  _originNorthing;
-    char    _originZone[4];
-
-    Elevation _elevMin;
-    Elevation _elevMax;
-    unsigned int _nodataCount;
-
+    int _result;
 
 private:
     App();
@@ -64,157 +183,67 @@ private:
 
 /////////////////////////////////////////////////////////////////////////////
 
-App::App( int argc, char** argv ) :
-    _argc(argc), _argv(argv),
-    _refEllipsoid(23),  // WGS-84
-    _originLat(0), _originLon(0), _originElev(0),
-    _originEasting(0), _originNorthing(0),
-    _elevMin(1e6), _elevMax(-1e6), _nodataCount(0)
+App::App( int argc, char** argv ) : _argc(argc), _argv(argv), _result(0)
 {
-    _originZone[0] = '\0';
 }
 
 App::~App()
 {
 }
 
-bool App::loadFile( const std::string path, const std::string root, const std::string ext )
+void App::main()
 {
-    _fileRoot = root;
-    return _demGridFloat.read( path + root + ext );
+    const int refEllipsoid(23);        // WGS-84
+    double  homeEasting;
+    double  homeNorthing;
+    char    homeZone[4];
+
+    mewcx::LLtoUTM( refEllipsoid,
+        HOME_LATITUDE, HOME_LONGITUDE,
+        homeNorthing, homeEasting, homeZone );
+
+    mewcx::UTM origin( homeEasting, homeNorthing, HOME_UTM_ZONE, HOME_ELEVATION );
+
+    mewcx::Gridfloat grid( southWest, northEast );
+    grid.readData( numRows, numCols, fileName );
+    grid.referenceEllipsoid( refEllipsoid );
+
+    printf( "#define %s\t(%.5f)\t// [%s]\n",   "ORIGIN_LAT", HOME_LATITUDE, "degrees" );
+    printf( "#define %s\t(%.5f)\t// [%s]\n",   "ORIGIN_LON", HOME_LONGITUDE, "degrees" );
+    printf( "#define %s\t(%.2f)\t// [%s]\n\n", "ORIGIN_ELEV", HOME_ELEVATION, "meters" );
+    printf( "#define %s\t\"%s\"\n",            "ORIGIN_UTMZONE", homeZone );
+    printf( "#define %s\t(%.2f)\t// [%s]\n",   "ORIGIN_EASTING", homeEasting, "meters" );
+    printf( "#define %s\t(%.2f)\t// [%s]\n\n", "ORIGIN_NORTHING", homeNorthing, "meters" );
+    //printf( "#define %s\t\"%s\"\n",            "DATA_FILE", _demGridFloat.fileName().c_str() );
+    printf( "#define %s\t\t(%d)\n",            "NCOLS", numCols );
+    printf( "#define %s\t\t(%d)\n\n",          "NROWS", numRows );
+    printf( "#define %s\t(%.5f)\t// [%s]\n",   "SOUTH_LAT", southWest.latitude(), "degrees" );
+    printf( "#define %s\t(%.5f)\t// [%s]\n",   "WEST_LON", southWest.longitude(), "degrees" );
+    printf( "#define %s\t(%.5f)\t// [%s]\n",   "NORTH_LAT", northEast.latitude(), "degrees" );
+    printf( "#define %s\t(%.5f)\t// [%s]\n\n", "EAST_LON", northEast.longitude(), "degrees" );
+
+    MinMaxFunctor minmax;
+    //grid.apply( minmax );
+    printf( "#define %s\t(%.2f)\t// [%s]\n",   "MINIMUM_ELEV", minmax._elevMin, "meters" );
+    printf( "#define %s\t(%.2f)\t// [%s]\n",   "MAXIMUM_ELEV", minmax._elevMax, "meters" );
+    printf( "#define %s\t(%d)\n\n",            "NODATA_COUNT", minmax._nodataCount );
+
+    VertexFunctor makeVerts( origin );
+    //grid.apply( makeVerts );
+
+    TexcoordFunctor makeTexcoords;
+    //grid.apply( makeTexcoords );
+
+    IndexFunctor makeIndices;
+    grid.apply( makeIndices );
 }
 
-void App::setOrigin( Latitude lat, Longitude lon, Elevation elev )
-{
-    _originLat = lat;
-    _originLon = lon;
-    _originElev = elev;
-    LLtoUTM( _refEllipsoid, _originLat, _originLon, _originNorthing, _originEasting, _originZone );
-}
+/////////////////////////////////////////////////////////////////////////////
 
-void App::findMinMax()
-{
-    const DATA_TYPE* demPtr( demData() );
-    for( int row = 0; row < NROWS; ++row )
-    {
-        const DATA_TYPE* rowPtr( &demPtr[row * NCOLS] );
-        for( int col = 0; col < NCOLS; ++col )
-        {
-            const DATA_TYPE dem( *rowPtr );
-            if( dem > NODATA_VALUE )
-            {
-                if( _elevMin > dem )   _elevMin = dem;
-                if( _elevMax < dem )   _elevMax = dem;
-            }
-            else
-            {
-                ++_nodataCount;
-            }
-            ++demPtr;
-        }
-    }
-}
-
-bool App::makeVerts() const
-{
-    std::string fileName( _fileRoot + "_vertices.h" );
-    std::ofstream outFile;
-    outFile.open( fileName.c_str() );
-    if( ! outFile )
-        return false;
-
-    outFile << "static const float vertices[][3] = {" << std::endl;
-    outFile << "\t// easting, northing, elevation [m]" << std::endl;
-
-    unsigned int vertId(0);
-    const DATA_TYPE* demPtr( demData() );
-    for( int row = 0; row < NROWS; ++row )
-    {
-        const Latitude lat( CELLSIZE * row + YLLCORNER );
-        outFile << "\t// row " << row
-            << " latitude " << lat
-            << " vertId " << vertId
-            << std::endl;
-
-        for( int col = 0; col < NCOLS; ++col )
-        {
-            const Longitude lon( CELLSIZE * col + XLLCORNER );
-            const DATA_TYPE dem( *demPtr );
-
-            // UTM coordinates
-            Easting easting(0);
-            Northing northing(0);
-            char zone[4];
-            LLtoUTM( _refEllipsoid, lat, lon, northing, easting, zone );
-            Elevation elevation(dem);
-
-            // translate data to origin
-            easting   -= _originEasting;
-            northing  -= _originNorthing;
-            elevation -= _originElev;
-
-            outFile << "\t{" << easting << "," << northing << "," << elevation << "}," << std::endl;
-
-            ++demPtr;
-            ++vertId;
-        }
-    }
-    outFile << "};\n" << std::endl;
-    outFile.close();
-
-    printf( "#define %s\t(%.5f)\t// [%s]\n",   "ORIGIN_LAT", _originLat, "degrees" );
-    printf( "#define %s\t(%.5f)\t// [%s]\n",   "ORIGIN_LON", _originLon, "degrees" );
-    printf( "#define %s\t(%.2f)\t// [%s]\n\n", "ORIGIN_ELEV", _originElev, "meters" );
-    printf( "#define %s\t\"%s\"\n",            "ORIGIN_UTMZONE", _originZone );
-    printf( "#define %s\t(%.2f)\t// [%s]\n",   "ORIGIN_EASTING", _originEasting, "meters" );
-    printf( "#define %s\t(%.2f)\t// [%s]\n\n", "ORIGIN_NORTHING", _originNorthing, "meters" );
-    printf( "#define %s\t\"%s\"\n",            "DATA_FILE", _demGridFloat.fileName().c_str() );
-    printf( "#define %s\t\t(%d)\n",            "NCOLS", NCOLS );
-    printf( "#define %s\t\t(%d)\n\n",          "NROWS", NROWS );
-    printf( "#define %s\t(%.5f)\t// [%s]\n",   "SOUTH_LAT", YLLCORNER, "degrees" );
-    printf( "#define %s\t(%.5f)\t// [%s]\n",   "WEST_LON", XLLCORNER, "degrees" );
-    printf( "#define %s\t(%.5f)\t// [%s]\n",   "NORTH_LAT", ( CELLSIZE * (NROWS-1) + YLLCORNER ), "degrees" );
-    printf( "#define %s\t(%.5f)\t// [%s]\n\n", "EAST_LON", ( CELLSIZE * (NCOLS-1) + XLLCORNER ), "degrees" );
-    printf( "#define %s\t(%.2f)\t// [%s]\n",   "MINIMUM_ELEV", _elevMin, "meters" );
-    printf( "#define %s\t(%.2f)\t// [%s]\n",   "MAXIMUM_ELEV", _elevMax, "meters" );
-    printf( "#define %s\t(%d)\n\n",            "NODATA_COUNT", _nodataCount );
-
-    return true;
-}
-
-bool App::makeTexCoords() const
-{
-    std::string fileName( _fileRoot + "_texcoords.h" );
-    std::ofstream outFile;
-    outFile.open( fileName.c_str() );
-    if( ! outFile )
-        return false;
-
-    outFile << "static const float texcoords[][2] = {" << std::endl;
-    for( int row = 0; row < NROWS; ++row )
-    {
-        const double yFract( (double)row / (NROWS-1) );
-
-        for( int col = 0; col < NCOLS; ++col )
-        {
-            const double xFract( (double)col / (NCOLS-1) );
-            outFile << "\t{" << xFract << "," << yFract << "}," << std::endl;
-        }
-    }
-    outFile << "};\n" << std::endl;
-    outFile.close();
-    return true;
-}
-
-bool App::makeNormals() const
-{
-    // TODO
-    return false;
-}
-
+#if 0
 bool App::makeRawImage() const
 {
-    const Elevation elevDelta( _elevMax - _elevMin );
+    const double elevDelta( _elevMax - _elevMin );
     assert( elevDelta >= 0 );
 
     typedef unsigned char Pixel;
@@ -252,6 +281,7 @@ bool App::makeRawImage() const
     rawImage.close();
     return true;
 }
+#endif
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -259,15 +289,8 @@ bool App::makeRawImage() const
 int main( int argc, char* argv[] )
 {
     App app( argc, argv );
-    app.loadFile( FILE_PATH, FILE_ROOT, FILE_EXT );
-    app.setOrigin( HOME_LAT, HOME_LON, HOME_ELEV );
-
-    app.findMinMax();
-    app.makeVerts();
-    app.makeTexCoords();
-    app.makeNormals();
-    app.makeRawImage();
+    app.main();
+    return app.result();
 }
-
 
 // vim: set sw=4 ts=8 et ic ai:
