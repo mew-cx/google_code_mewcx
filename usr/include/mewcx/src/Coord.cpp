@@ -1,16 +1,17 @@
-// ll2utm.cpp
-// latlon 2 UTM conversion
+// $Id$
+// $URL$
 
 #define _CRT_SECURE_NO_WARNINGS
+
+#include "mewcx/Coord.h"
 
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "ll2utm.h"
 
 /////////////////////////////////////////////////////////////////////////////
 
-Ellipsoid::Ellipsoid( int id, const char* name, double radius, double ecc ) :
+mewcx::Ellipsoid::Ellipsoid( int id, const char* name, double radius, double ecc ) :
         _id(id),
         _ellipsoidName(name),
         _equatorialRadius(radius),
@@ -19,7 +20,7 @@ Ellipsoid::Ellipsoid( int id, const char* name, double radius, double ecc ) :
 }
 
 
-Ellipsoid ellipsoid[] = 
+mewcx::Ellipsoid mewcx::Ellipsoid::s_ellipsoids[] = 
 {   // id, Ellipsoid name, Equatorial Radius, square of eccentricity
     Ellipsoid( 0, "placeholder", 0, 0),
     Ellipsoid( 1, "Airy", 6377563, 0.00667054),
@@ -67,8 +68,9 @@ Defense Mapping Agency. 1987b. DMA Technical Report: Supplement to Department of
 
 
 
-void LLtoUTM(int ReferenceEllipsoid, const double Lat, const double Long, 
-    double &UTMNorthing, double &UTMEasting, char* UTMZone)
+void mewcx::LLtoUTM( int ReferenceEllipsoid,
+        const double Lat, const double Long, 
+        double &UTMNorthing, double &UTMEasting, char* UTMZone )
 {
 //converts lat/long to UTM coords.  Equations from USGS Bulletin 1532 
 //East Longitudes are positive, West longitudes are negative. 
@@ -76,8 +78,10 @@ void LLtoUTM(int ReferenceEllipsoid, const double Lat, const double Long,
 //Lat and Long are in decimal degrees
     //Written by Chuck Gantz- chuck.gantz@globalstar.com
 
-    double a = ellipsoid[ReferenceEllipsoid]._equatorialRadius;
-    double eccSquared = ellipsoid[ReferenceEllipsoid]._eccentricitySquared;
+    const Ellipsoid& ellipsoid( Ellipsoid::get( ReferenceEllipsoid ) );
+
+    double a = ellipsoid._equatorialRadius;
+    double eccSquared = ellipsoid._eccentricitySquared;
     double k0 = 0.9996;
 
     double LongOrigin;
@@ -133,7 +137,7 @@ void LLtoUTM(int ReferenceEllipsoid, const double Lat, const double Long,
             UTMNorthing += 10000000.0; //10000000 meter offset for southern hemisphere
 }
 
-char UTMLetterDesignator(double Lat)
+char mewcx::UTMLetterDesignator(double Lat)
 {
     //This routine determines the correct UTM letter designator for the given latitude
     //returns 'Z' if latitude is outside the UTM limits of 84N to 80S
@@ -167,8 +171,9 @@ char UTMLetterDesignator(double Lat)
 }
 
 
-void UTMtoLL(int ReferenceEllipsoid, const double UTMNorthing, const double UTMEasting, const char* UTMZone,
-double& Lat,  double& Long )
+void mewcx::UTMtoLL( int ReferenceEllipsoid,
+        const double UTMNorthing, const double UTMEasting, const char* UTMZone,
+        double& Lat,  double& Long )
 {
 //converts UTM coords to lat/long.  Equations from USGS Bulletin 1532 
 //East Longitudes are positive, West longitudes are negative. 
@@ -176,9 +181,11 @@ double& Lat,  double& Long )
 //Lat and Long are in decimal degrees. 
     //Written by Chuck Gantz- chuck.gantz@globalstar.com
 
+    const Ellipsoid& ellipsoid( Ellipsoid::get( ReferenceEllipsoid ) );
+
     double k0 = 0.9996;
-    double a = ellipsoid[ReferenceEllipsoid]._equatorialRadius;
-    double eccSquared = ellipsoid[ReferenceEllipsoid]._eccentricitySquared;
+    double a = ellipsoid._equatorialRadius;
+    double eccSquared = ellipsoid._eccentricitySquared;
     double eccPrimeSquared;
     double e1 = (1-sqrt(1-eccSquared))/(1+sqrt(1-eccSquared));
     double N1, T1, C1, R1, D, M;
