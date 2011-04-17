@@ -55,20 +55,16 @@ public:
 
     void rowStart( unsigned int row )
     {
-        //printf( "\t// row %d vertId %d\n", row, _vertId );
+        printf( "\t// row %d vertId %d\n", row, _vertId );
     }
 
     void operator()( const mewcx::Gridfloat& gridfloat )
     {
         const mewcx::UTM& utm( gridfloat.currentUtm() );
-#if 0
         printf( "\t{%.2f,%.2f,%.2f},\n",
             utm.easting() - _origin.easting(),
             utm.northing() - _origin.northing(),
             utm.elevation() - _origin.elevation() );
-#else
-        printf( "%.2f ", (utm.elevation()-_origin.elevation())*5.0 );
-#endif
         ++_vertId;
     }
 
@@ -86,6 +82,48 @@ public:
 private:
     mewcx::UTM _origin;
     unsigned int _vertId;
+};
+
+
+class HeightFieldFunctor : public mewcx::GridfloatFunctor
+{
+public:
+    HeightFieldFunctor( const mewcx::UTM& origin, unsigned int numRows, unsigned int numCols ) :
+        _origin(origin)
+    {
+        printf( "HeightField {\n" );
+        printf( "  DataVariance DYNAMIC\n" );
+        //printf( "  Origin %f %f %f\n", -_origin.easting(), -_origin.northing(), -_origin.elevation() );
+        printf( "  Origin %f %f %f\n", 0.0, 0.0, 0.0 );
+        printf( "  XInterval 80.0\n" );
+        printf( "  YInterval 80.0\n" );
+        printf( "  SkirtHeight 0\n" );
+        printf( "  BorderWidth 0\n" );
+        printf( "  NumColumnsAndRows %d %d\n", numRows, numCols );
+        printf( "  Heights\n" );
+        printf( "  {\n" );
+    }
+
+    void operator()( const mewcx::Gridfloat& gridfloat )
+    {
+        const double elevationScale( 5.0 );
+        const double elev( gridfloat.currentElev() );
+        printf( "%.2f ", ( elev - _origin.elevation() ) * elevationScale );
+    }
+
+    void rowEnd( unsigned int row )
+    {
+        printf( "\n" );
+    }
+
+    ~HeightFieldFunctor()
+    {
+        printf( "  }\n" );
+        printf( "}\n" );
+    }
+
+private:
+    mewcx::UTM _origin;
 };
 
 
@@ -274,7 +312,7 @@ int App::main()
 
     mewcx::UTM origin( homeEasting, homeNorthing, HOME_UTM_ZONE, HOME_ELEVATION );
 
-#if 0
+#if 1
     const char* sourceName( "National Elevation Database 1 arcsecond" );
     const char* fileName( DATA_PATH "63870190/ned_63870190.flt" );
     const mewcx::WGS84 southWest( 39.6249999994491, -105.749999998776 );
@@ -284,7 +322,7 @@ int App::main()
     //NODATA_value(-9999);
     // Resolution in x direction:  0.000277777777796473 Degree
     // Resolution in y direction:  0.000277777777796473 Degree
-#elif 1
+#elif 0
     const char* sourceName( "National Elevation Database 1/3 arcsecond" );
     const char* fileName( DATA_PATH "89875513/89875513.flt" );
     const mewcx::WGS84 southWest( 39.6249999992044, -105.750092591257 );
@@ -335,6 +373,12 @@ int App::main()
     printf( "\n" );
 
     {
+    HeightFieldFunctor makeHF( origin, numRows, numCols );
+    grid.apply( makeHF );
+    }
+
+#if 0
+    {
     MinMaxFunctor minmax;
     grid.apply( minmax );
 
@@ -351,17 +395,15 @@ int App::main()
 
     {
     TexcoordFunctor makeTexcoords;
-    //grid.apply( makeTexcoords );
+    grid.apply( makeTexcoords );
     }
 
     {
     IndexFunctor makeIndices;
-    ////grid.apply( makeIndices );
+    grid.apply( makeIndices );
     }
+#endif
 }
-
-/////////////////////////////////////////////////////////////////////////////
-
 
 
 /////////////////////////////////////////////////////////////////////////////
