@@ -8,12 +8,12 @@
 #include <stdio.h>
 
 // usr/include
-#include "ll2utm.h"
-#include "GridFloat.h"
-#include "private/latlon_home.h"
+#include "mewcx/ll2utm.h"
+//#include "mewcx/GridFloat.h"
+//#include "mewcx/private/latlon_home.h"
 
 // usr/data/seamless.usgs.gov/dem
-#include "89875513/dem_info.h"
+#include "ned13_89875513.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
