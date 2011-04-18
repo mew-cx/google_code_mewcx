@@ -1,8 +1,21 @@
 gilpin_3x3 coverage [degrees]:
 
-north	40.000
 south	39.625
-
-west	-105.750
 east	-105.375
 
+north	40.000
+west	-105.750
+
+=============================================================================
+UTM conversion using
+http://www.rcn.montana.edu/resources/tools/coordinates.aspx
+
+South East
+	Zone 13
+	Easting 467816
+	Northing 4386204
+
+North West
+	Zone 13
+	Easting 435980
+	Northing 4428027
