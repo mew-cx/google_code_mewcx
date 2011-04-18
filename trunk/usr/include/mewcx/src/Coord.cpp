@@ -10,6 +10,12 @@
 #include <stdlib.h>
 
 /////////////////////////////////////////////////////////////////////////////
+// This LatLon/UTM conversion code is derived from code archived at
+// http://www.gpsy.com/gpsinfo/geotoutm/ dated 05 Jun 1998 by
+// chuck.gantz@globalstar.com
+/////////////////////////////////////////////////////////////////////////////
+
+
 
 mewcx::Ellipsoid::Ellipsoid( int id, const char* name, double radius, double ecc ) :
         _id(id),
