@@ -1,11 +1,10 @@
-@echo off
+set PATH=C:\mew\dvl\osg283\bin;%PATH%
 
-set OSG_ROOT=C:\mew\dvl\osg283
-
-set OSG_PATH=%OSG_ROOT%\bin
-set PATH=%OSG_PATH%;%PATH%
+set MEWCX=C:\mew\mewcx.googlecode.com
+set OSG_FILE_PATH=%MEWCX%\usr\data;%MEWCX%\big\data
 
 set OSG_NOTIFY_LEVEL=WARN
- 
-osgviewer.exe x.osg xyz100.osg.100.scale.65000,65000,2000.trans
+
+set MARKER=xyz100.osg.100.scale.65000,65000,2000.trans
+osgviewer.exe gilpin_3x3_ned1.osg 
 
