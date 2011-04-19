@@ -10,7 +10,7 @@
 
 /////////////////////////////////////////////////////////////////////////////
 
-#define DATA_PATH       "../../data/gilpin_3x3/seamless.usgs.gov/dem/"
+#define MEWCX_ROOT      "../../../"
 #define NODATA_value    (-9999)
 
 /////////////////////////////////////////////////////////////////////////////
@@ -314,7 +314,7 @@ int App::main()
 
 #if 1
     const char* sourceName( "National Elevation Database 1 arcsecond" );
-    const char* fileName( DATA_PATH "63870190/ned_63870190.flt" );
+    const char* fileName( MEWCX_ROOT "usr/data/gilpin_3x3/seamless.usgs.gov/dem/63870190/ned_63870190.flt" );
     const mewcx::WGS84 southWest( 39.6249999994491, -105.749999998776 );
     const mewcx::WGS84 northEast( 39.9999999994743, -105.37499999875 );
     const unsigned int numRows(1350);
@@ -324,7 +324,7 @@ int App::main()
     // Resolution in y direction:  0.000277777777796473 Degree
 #elif 0
     const char* sourceName( "National Elevation Database 1/3 arcsecond" );
-    const char* fileName( DATA_PATH "89875513/89875513.flt" );
+    const char* fileName( MEWCX_ROOT "big/data/gilpin_3x3/seamless.usgs.gov/dem/89875513/89875513.flt" );
     const mewcx::WGS84 southWest( 39.6249999992044, -105.750092591257 );
     const mewcx::WGS84 northEast( 40.0000925918319, -105.374999998629 );
     const unsigned int numRows(4051);
