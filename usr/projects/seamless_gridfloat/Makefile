@@ -1,25 +1,26 @@
 # $Id$
+# $URL$
 
 EXE = readdem
 RAW = ${EXE}.raw
 PNG = ${EXE}.png
 
-INC_FILES = \
-	../../include/mewcx/Version.h \
-	../../include/mewcx/Coord.h \
-	../../include/mewcx/UsgsGridfloat.h
+INC_PATH = ../../include
+SRC_PATH = ${INC_PATH}/mewcx/src
 
-SRC_FILES =  \
-	../../include/mewcx/src/Version.cpp \
-	../../include/mewcx/src/Coord.cpp \
-	../../include/mewcx/src/UsgsGridfloat.cpp
+SRC_FILES = \
+	${EXE}.cpp \
+	${SRC_PATH}/Coord.cpp \
+	${SRC_PATH}/UsgsGridfloat.cpp \
+	${SRC_PATH}/Version.cpp
 
-CPPFLAGS = -I ../../include
+CPPFLAGS = -I${INC_PATH}
 
 
 #all : ${EXE} ${PNG}
+all : ${EXE}
 
-${EXE} : ${EXE}.cpp ${SRC_FILES}
+${EXE} : ${SRC_FILES}
 
 ${RAW} : ${EXE}
 	${EXE}
