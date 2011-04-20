@@ -403,6 +403,7 @@ int App::main()
     grid.apply( makeIndices );
     }
 #endif
+    return 0;
 }
 
 
