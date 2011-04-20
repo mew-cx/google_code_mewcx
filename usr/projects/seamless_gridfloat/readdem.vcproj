@@ -97,11 +97,15 @@
 	<References>
 	</References>
 	<Files>
-		<File RelativePath="../../include/GridFloat.h" > </File>
-		<File RelativePath="../../include/ll2utm.h" > </File>
-		<File RelativePath="../../include/src/GridFloat.cpp" > </File>
-		<File RelativePath="../../include/src/ll2utm.cpp" > </File>
-		<File RelativePath="readdem.cpp" > </File>
+
+<File RelativePath="../../include/mewcx/Coord.h" > </File>
+<File RelativePath="../../include/mewcx/UsgsGridfloat.h" > </File>
+<File RelativePath="../../include/mewcx/Version.h" > </File>
+<File RelativePath="../../include/mewcx/src/Coord.cpp" > </File>
+<File RelativePath="../../include/mewcx/src/UsgsGridfloat.cpp" > </File>
+<File RelativePath="../../include/mewcx/src/Version.cpp" > </File>
+<File RelativePath="readdem.cpp" > </File>
+
 	</Files>
 	<Globals>
 	</Globals>

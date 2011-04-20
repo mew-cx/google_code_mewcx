@@ -23,7 +23,7 @@ public:
     void operator()( const mewcx::Gridfloat& gridfloat )
     {
         const mewcx::UTM& utm( gridfloat.currentUtm() );
-        const float elev( utm.elevation() );
+        const double elev( utm.elevation() );
         if( elev > NODATA_value )
         {
             if( _elevMin > elev )   _elevMin = elev;
