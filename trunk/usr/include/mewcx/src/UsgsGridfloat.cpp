@@ -52,7 +52,7 @@ bool mewcx::Gridfloat::readData( unsigned int cols, unsigned int rows, const cha
 }
 
 
-unsigned int mewcx::Gridfloat::apply( GridfloatFunctor& functor )
+void mewcx::Gridfloat::apply( GridfloatFunctor& functor )
 {
     for( _currentRow = 0; _currentRow < _numRows; ++_currentRow )
     {

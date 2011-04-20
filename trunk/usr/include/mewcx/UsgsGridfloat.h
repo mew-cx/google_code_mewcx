@@ -40,7 +40,7 @@ public:
     unsigned int numRows() const { return _numRows; }
     unsigned int numCols() const { return _numCols; }
 
-    unsigned int apply( GridfloatFunctor& functor );
+    void apply( GridfloatFunctor& functor );
     // the following only valid during apply():
     unsigned int currentRow() const { return _currentRow; }
     unsigned int currentCol() const { return _currentCol; }
