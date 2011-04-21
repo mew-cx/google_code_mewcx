@@ -1,0 +1,93 @@
+%!PS-ADOBE-1.0
+% $Id: stairway.ps,v 1.1 1999/01/22 01:47:32 mew Exp $
+% stairway for 3x5 card (mew) 970618
+
+/Helvetica findfont 10 scalefont setfont
+
+/rect { [] 0 setdash rectstroke } def
+/fold { [2.5 2.5] 1.25 setdash moveto lineto stroke } def
+/cut  { [] 0 setdash moveto lineto stroke } def
+
+72 100 div dup scale   % all our coords are in hundredths, not points
+
+/stairway
+{
+    5 5 moveto (mew) show
+
+      0   0 300 500 rect
+
+      0 225  75 225 fold
+     75  65  75 345 cut
+     75 105 125 105 fold
+     75 185 115 185 fold
+     75 265 125 265 fold
+     75 345 115 345 fold
+    115 145 115 195 cut
+    115 145 125 145 fold
+    115 155 135 155 fold
+    115 195 135 195 fold
+    115 305 115 355 cut
+    115 305 125 305 fold
+    115 315 135 315 fold
+    125  95 125 145 cut
+    125  95 145  95 fold
+    125 135 145 135 fold
+    125 255 125 305 cut
+    125 255 145 255 fold
+    125 295 145 295 fold
+    135 165 155 165 fold
+    135 205 135 155 cut
+    135 205 155 205 fold
+    135 315 135 365 cut
+    135 325 155 325 fold
+    135 355 115 355 fold
+    135 365 155 365 fold
+    145  85 145 135 cut
+    145  85 165  85 fold
+    145 125 165 125 fold
+    145 245 145 295 cut
+    145 245 165 245 fold
+    145 285 165 285 fold
+    155 175 175 175 fold
+    155 215 155 165 cut
+    155 215 175 215 fold
+    155 325 155 375 cut
+    165  75 165 125 cut
+    165  75 185  75 fold
+    165 115 185 115 fold
+    165 235 165 285 cut
+    165 235 185 235 fold
+    165 275 185 275 fold
+    175 225 175 175 cut
+    175 335 155 335 fold
+    175 335 175 385 cut
+    175 345 225 345 fold
+    175 375 155 375 fold
+    175 385 185 385 fold
+    185  65  75  65 fold
+    185  65 185 115 cut
+    185 225 175 225 fold
+    185 225 185 275 cut
+    185 385 185 435 cut
+    185 385 215 385 cut
+    215 385 215 435 fold
+    215 385 225 385 fold
+    215 435 185 435 cut
+    225 105 185 105 fold
+    225 105 225 385 cut
+    225 185 175 185 fold
+    225 225 300 225 fold
+    225 265 185 265 fold
+} def
+
+0 setlinewidth  % hairline width
+1 setlinecap    % circular line cap
+1 setlinejoin   % circular line join
+
+gsave 100  50 translate  stairway  grestore
+gsave 450  50 translate  stairway  grestore
+gsave 100 550 translate  stairway  grestore
+gsave 450 550 translate  stairway  grestore
+
+showpage
+%%EOF

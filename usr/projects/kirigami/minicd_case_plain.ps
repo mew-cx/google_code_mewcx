@@ -1,0 +1,82 @@
+%!PS-Adobe-2.0
+
+/CDROM_RADIUS 40 def    % radius of mini-CDROM [mm]
+/MARGIN 2 def           % a bit of margin around the CDROM
+
+/QUAD_SIZE CDROM_RADIUS MARGIN add def
+/ARCRADIUS CDROM_RADIUS QUAD_SIZE div def
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% draw a single quadrant (quad# = 0-3)
+
+/drawQuad   % ( quad# -- )
+{
+gsave
+    % rotate and translate for the specific quadrant
+    90 mul 45 add rotate   0 2 translate
+
+    0 setlinewidth      % hairline width
+    1 setlinecap        % circular line cap
+    1 setlinejoin       % circular line join
+
+    % cutline
+    newpath
+    1 -1 moveto
+    0 0 lineto
+    0 0 ARCRADIUS 90 180 arc
+    -1 -1 lineto
+    stroke
+
+    % cut/score guides
+    newpath
+    -1.02 -1    moveto  -0.1 0    rlineto
+     1.02 -0.98 moveto   0.05 0.05 rlineto
+    -0.72  0.72 moveto  -0.05 0.05 rlineto
+     0     1.02 moveto   0    0.05 rlineto
+     0.02  ARCRADIUS moveto   0.1 0    rlineto
+
+     0.02  0.02 moveto   0.2 0.2 rlineto
+     0.02  0    moveto   0.2 0    rlineto
+
+     0.9   0    moveto   0.2  0    rlineto
+     1    -0.1  moveto   0    0.2  rlineto
+
+    -1.00  0    moveto  -0.1 0    rlineto
+    -1.00  -0.1 moveto   0.0  0.20 rlineto
+
+    stroke
+
+grestore
+} def
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% draw the case centered on the origin
+
+/drawCase   % ( -- )
+{
+gsave
+    % map quadrant to unit circle
+    QUAD_SIZE
+    25.4 div 72 mul dup scale   % rescale [mm] -> [points]
+
+    0 1 3 {drawQuad} for
+grestore
+} def
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% make it so
+
+% move origin to be near center of 8.5x11 page
+8.5 2 div 72 mul   11 2 div 1 add 72 mul   translate
+
+drawCase
+
+/Helvetica findfont 8 scalefont setfont
+-200 -350 moveto (A folding paper case for 8cm mini-CDROMs) show
+-200 -360 moveto (Copyright 2005 Mike Weiblen http://mew.cx/) show
+-200 -370 moveto ($Id: minicd_case_plain.ps,v 1.2 2005/09/19 04:27:06 mew Exp $) show
+
+showpage
+
+%EOF
