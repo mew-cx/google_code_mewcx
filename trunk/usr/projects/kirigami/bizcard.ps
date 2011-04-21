@@ -1,0 +1,92 @@
+%!PS-ADOBE-1.0
+% $Id: bizcard.ps,v 1.4 1999/01/22 02:53:58 mew Exp $
+% business card gradient (mew) 970618
+
+/Helvetica findfont 10 scalefont setfont
+
+/rect { [] 0 setdash rectstroke } def
+/fold { [2.5 2.5] 1.25 setdash moveto lineto stroke } def
+/cut  { [] 0 setdash moveto lineto stroke } def
+
+72 100 div dup scale    % all our coords are in hundredths, not points
+
+/bizcard
+{
+    5 5 moveto (mew) show
+
+      0   0 200 350 rect
+
+     25  55  25 235 cut
+     45  55  45 235 cut
+     65  55  65 235 cut
+     85  55  85 235 cut
+    105  55 105 235 cut
+    125  55 125 235 cut
+    145  55 145 235 cut
+    165  55 165 235 cut
+    185  55 185 235 cut
+     15 115  15 295 cut
+     35 115  35 295 cut
+     55 115  55 295 cut
+     75 115  75 295 cut
+     95 115  95 295 cut
+    115 115 115 295 cut
+    135 115 135 295 cut
+    155 115 155 295 cut
+    175 115 175 295 cut
+
+      0  55  25  55 fold
+     45  55  65  55 fold
+     85  55 105  55 fold
+    125  55 145  55 fold
+    165  55 185  55 fold
+     15 115  25 115 fold
+     35 115  45 115 fold
+     55 115  65 115 fold
+     75 115  85 115 fold
+     95 115 105 115 fold
+    115 115 125 115 fold
+    135 115 145 115 fold
+    155 115 165 115 fold
+    175 115 185 115 fold
+      0 175  15 175 fold
+     25 175  35 175 fold
+     45 175  55 175 fold
+     65 175  75 175 fold
+     85 175  95 175 fold
+    105 175 115 175 fold
+    125 175 135 175 fold
+    145 175 155 175 fold
+    165 175 175 175 fold
+    185 175 200 175 fold
+     15 235  25 235 fold
+     35 235  45 235 fold
+     55 235  65 235 fold
+     75 235  85 235 fold
+     95 235 105 235 fold
+    115 235 125 235 fold
+    135 235 145 235 fold
+    155 235 165 235 fold
+    175 235 185 235 fold
+     15 295  35 295 fold
+     55 295  75 295 fold
+     95 295 115 295 fold
+    135 295 155 295 fold
+    175 295 200 295 fold
+} def
+
+0 setlinewidth  % hairline width
+1 setlinecap    % circular line cap
+1 setlinejoin   % circular line join
+
+gsave  100 100 translate   bizcard  grestore
+gsave  350 100 translate   bizcard  grestore
+gsave  600 100 translate   bizcard  grestore
+gsave  100 500 translate   bizcard  grestore
+gsave  350 500 translate   bizcard  grestore
+gsave  600 500 translate   bizcard  grestore
+
+100 50 moveto ($Id: bizcard.ps,v 1.4 1999/01/22 02:53:58 mew Exp $) show
+
+showpage
+%%EOF
