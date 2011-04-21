@@ -1,1 +1,5 @@
-http://www.gpsy.com/gpsinfo/geotoutm/
+This code from http://www.gpsy.com/gpsinfo/geotoutm/
+
+From: "Chuck Gantz" chuck.gantz@globalstar.com
+Date: Fri, 05 Jun 1998 14:32:23 -0700
+
